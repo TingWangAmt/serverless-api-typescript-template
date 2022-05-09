@@ -10,7 +10,7 @@ const schema = {
 
 const hello: ValidatedEventAPIGatewayProxyEvent<typeof schema> =  async (event) => {
     const origin = event.headers['origin'];
-    const resOriginHeader = ["https://master.d2w7htrom5yxv0.amplifyapp.com/", "http://localhost:3000/"];
+    const resOriginHeader = ["https://master.d2w7htrom5yxv0.amplifyapp.com", "http://localhost:3000"];
     const responseHeaders = {
         'Access-Control-Allow-Origin': '',
         'Access-Control-Allow-Credentials': true,
