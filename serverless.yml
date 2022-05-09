@@ -4,18 +4,30 @@ service: serverless-template
 
 plugins:
   - serverless-plugin-typescript
+  - serverless-offline
   - serverless-stack-output
+  - aws-amplify-serverless-plugin
 
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs14.x
   stage: ${opt:stage, 'dev'}
-  region: eu-west-1
+  region: ${opt:stage, 'ap-northeast-1'}
 
 custom:
   stage: ${opt:stage, 'dev'}
   output:
     file: .serverless/output.json
+  amplify:
+    # this can be anything, as long as the frontend project includes it
+    - filename: src/aws-exports.js
+      type: javascript
+
+package:
+  exclude:
+    - node_modules/**
+  include:
+    - serverless.yml
 
 resources:
   Outputs:
@@ -31,7 +43,7 @@ resources:
 functions:
   healthcheck:
     handler: src/functions/healthcheck.healthcheck
-    description: Healthcheck to ensure the service is up
+    description: aws:states:opt-out
     events:
       - http:
           path: healthcheck

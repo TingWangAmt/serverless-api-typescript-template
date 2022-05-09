@@ -4,6 +4,7 @@
   "description": "A template for a Serverless API using Typescript and Jest",
   "main": "functions/healthcheck.js",
   "scripts": {
+    "sls:offline": "node_modules/.bin/sls --stage offline",
     "test": "jest",
     "remove": "sls remove",
     "deploy": "sls deploy",
@@ -20,13 +21,15 @@
   },
   "homepage": "https://github.com/JoshuaToth/serverless-api-typescript-template#readme",
   "dependencies": {
-    "typescript": "^3.5.3"
+    "aws-amplify-serverless-plugin": "^1.4.1",
+    "typescript": "^4.1.3"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.15",
     "@types/axios": "^0.14.0",
+    "@types/jest": "^24.0.15",
     "axios": "^0.19.0",
     "jest": "^24.8.0",
+    "serverless-offline": "^8.7.0",
     "serverless-plugin-typescript": "^1.1.7",
     "serverless-stack-output": "^0.2.3",
     "ts-jest": "^24.0.2",
