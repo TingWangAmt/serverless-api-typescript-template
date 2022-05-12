@@ -3,10 +3,7 @@ import { Sequelize } from 'sequelize';
 
 const sequelize = new Sequelize({
     database:"test",
-    host:"bopista-platform-postgresql.ceqbm7arub9o.ap-northeast-1.rds.amazonaws.com",
     port:5432,
-    username:"postgres",
-    password:"ozmHuRwoJ1qo65Qvaass",
     dialect:'postgres'
 });
 
