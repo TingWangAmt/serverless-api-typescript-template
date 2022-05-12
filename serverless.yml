@@ -3,31 +3,58 @@
 service: serverless-template 
 
 plugins:
+  - serverless-pseudo-parameters
+  - serverless-dynamodb-local
   - serverless-plugin-typescript
   - serverless-offline
-  - serverless-stack-output
   - aws-amplify-serverless-plugin
 
 provider:
   name: aws
   runtime: nodejs14.x
+  versionFunctions: false
   stage: ${opt:stage, 'dev'}
-  region: ${opt:stage, 'ap-northeast-1'}
+  region: ${opt:region, 'ap-northeast-1'}
+  # environment:
+  #   DYNAMODB_TABLE: test1
+  # iam:
+  #   role:
+  #     statements:
+  #       - Effect: Allow
+  #         Action:
+  #           - dynamodb:Query
+  #           - dynamodb:Scan
+  #           - dynamodb:GetItem
+  #           - dynamodb:PutItem
+  #           - dynamodb:UpdateItem
+  #           - dynamodb:DeleteItem
+  #         Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:388865528159:table/*"
 
 custom:
   stage: ${opt:stage, 'dev'}
   output:
     file: .serverless/output.json
-  amplify:
-    # this can be anything, as long as the frontend project includes it
-    - filename: src/aws-exports.js
-      type: javascript
+  # amplify:
+  #   # this can be anything, as long as the frontend project includes it
+  #   - filename: src/aws-exports.js
+  #     type: javascript
+  # dynamodb:
+  #   stage:
+  #     - dev
+  #     - offline
+  #   start:
+  #     port: 8000
+  #     inMemory: true
+  #     migrate: true
+  #   migration:
+  #     dir: offline/migrations
 
 package:
   exclude:
     - node_modules/**
   include:
     - serverless.yml
+    - .serverless/**
 
 resources:
   Outputs:
@@ -39,12 +66,60 @@ resources:
           - - "https://"
             - Ref: ApiGatewayRestApi
             - ".execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}"
+  # Resources:
+  #   TodosDynamoDbTable:
+  #     Type: 'AWS::DynamoDB::Table'
+  #     DeletionPolicy: Retain
+  #     Properties:
+  #       AttributeDefinitions:
+  #         -
+  #           AttributeName: name
+  #           AttributeType: S
+  #       KeySchema:
+  #         -
+  #           AttributeName: name
+  #           KeyType: HASH
+  #       ProvisionedThroughput:
+  #         ReadCapacityUnits: 1
+  #         WriteCapacityUnits: 1
+  #       TableName: ${self:provider.environment.DYNAMODB_TABLE}
 
 functions:
-  healthcheck:
-    handler: src/functions/healthcheck.healthcheck
-    description: aws:states:opt-out
+  pgCheck:
+    handler: src/functions/pgCheck.list
+    description: posrgre crud
+    role: arn:aws:iam::388865528159:role/serverless-template-dev-ap-northeast-1-lambdaRole
     events:
       - http:
-          path: healthcheck
+          path: pg
           method: get
+          cors: 
+            origin:
+              - https://master.d2w7htrom5yxv0.amplifyapp.com
+              - http://localhost:3000
+            headers: 
+              - Content-Type
+              - Origin
+              - Authorization
+              - Accept
+              - X-Requested-With
+            allowCredentials: true
+  # healthcheck:
+  #   handler: src/functions/healthcheck.healthcheck
+  #   description: aws:states:opt-out
+  #   events:
+  #     - http:
+  #         path: healthcheck
+  #         method: get
+  #         cors: 
+  #           origin:
+  #             - https://master.d2w7htrom5yxv0.amplifyapp.com
+  #             - http://localhost:3000
+  #           headers: 
+  #             - Content-Type
+  #             - Origin
+  #             - Authorization
+  #             - X-Api-Key
+  #             - Accept
+  #             - X-Requested-With
+  #           allowCredentials: true
