@@ -1,5 +1,5 @@
 import { Handler } from 'aws-lambda';
- import {Sequelize, Model, DataTypes } from 'sequelize';
+import { Sequelize } from 'sequelize';
 
 const sequelize = new Sequelize({
     database:"test",
