@@ -3,9 +3,9 @@
 service: serverless-template 
 
 plugins:
+  - serverless-plugin-typescript
   - serverless-pseudo-parameters
   - serverless-dynamodb-local
-  - serverless-plugin-typescript
   - serverless-offline
   - aws-amplify-serverless-plugin
 
@@ -54,6 +54,10 @@ custom:
 package:
   exclude:
     - node_modules/**
+    # - '!node_modules/sequelize/**'
+    # - '!node_modules/sequelize/**'
+    # - '!node_modules/pg/**'
+    # - '!node_modules/pg-connection-string/**'
   include:
     - serverless.yml
     - .serverless/**
