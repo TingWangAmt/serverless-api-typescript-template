@@ -5,9 +5,9 @@ service: serverless-template
 plugins:
   - serverless-plugin-typescript
   - serverless-pseudo-parameters
-  - serverless-dynamodb-local
+  # - serverless-dynamodb-local
   - serverless-offline
-  - aws-amplify-serverless-plugin
+  # - aws-amplify-serverless-plugin
 
 provider:
   name: aws
@@ -16,30 +16,27 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'ap-northeast-1'}
   role: arn:aws:iam::388865528159:role/serverless-template-dev-ap-northeast-1-lambdaRole
-  # vpc: 
-  # environment:
-  #   DYNAMODB_TABLE: test1
-  # iam:
-  #   role:
-  #     statements:
-  #       - Effect: Allow
-  #         Action:
-  #           - dynamodb:Query
-  #           - dynamodb:Scan
-  #           - dynamodb:GetItem
-  #           - dynamodb:PutItem
-  #           - dynamodb:UpdateItem
-  #           - dynamodb:DeleteItem
-  #         Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:388865528159:table/*"
+  vpc:
+    securityGroupIds:
+      - sg-0c66673331d7e786a
+    subnetIds:
+      - subnet-063bc89ddcd0d099f
+      - subnet-08a3b69654a268e63
+      - subnet-0c34570ad93f2ebb7
+  environment:
+    NODE_ENV: ${opt:stage, 'dev'}
+    DB_PORT: 5432
+    DB_HOST: 'bopista-platform-lambda-rds-proxy.proxy-ceqbm7arub9o.ap-northeast-1.rds.amazonaws.com'
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource: '*'
 
 custom:
   stage: ${opt:stage, 'dev'}
   output:
     file: .serverless/output.json
-  # amplify:
-  #   # this can be anything, as long as the frontend project includes it
-  #   - filename: src/aws-exports.js
-  #     type: javascript
   # dynamodb:
   #   stage:
   #     - dev
@@ -54,10 +51,6 @@ custom:
 package:
   exclude:
     - node_modules/**
-    # - '!node_modules/sequelize/**'
-    # - '!node_modules/sequelize/**'
-    # - '!node_modules/pg/**'
-    # - '!node_modules/pg-connection-string/**'
   include:
     - serverless.yml
     - .serverless/**
@@ -93,6 +86,7 @@ resources:
 functions:
   pgCheck:
     handler: src/functions/pgCheck.list
+    role: arn:aws:iam::388865528159:role/serverless-template-dev-ap-northeast-1-lambdaRole
     description: posrgre crud
     events:
       - http:
@@ -100,15 +94,17 @@ functions:
           method: get
           cors: 
             origin:
-              - https://master.d2w7htrom5yxv0.amplifyapp.com
-              - http://localhost:3000
+              - "https://master.d2w7htrom5yxv0.amplifyapp.com"
+              - "http://localhost:3000"
             headers: 
-              - Content-Type
-              - Origin
-              - Authorization
-              - Accept
-              - X-Requested-With
+              - "Content-Type"
+              - "Origin"
+              - "Authorization"
+              - "Accept"
+              - "X-Requested-With"
             allowCredentials: true
+          layers:
+            - "arn:aws:lambda:ap-northeast-1:388865528159:layer:pg-sequelize:4"
   healthcheck:
     handler: src/functions/healthcheck.healthcheck
     description: aws:states:opt-out
@@ -118,13 +114,13 @@ functions:
           method: get
           cors: 
             origin:
-              - https://master.d2w7htrom5yxv0.amplifyapp.com
-              - http://localhost:3000
+              - "https://master.d2w7htrom5yxv0.amplifyapp.com"
+              - "http://localhost:3000"
             headers: 
-              - Content-Type
-              - Origin
-              - Authorization
-              - X-Api-Key
-              - Accept
-              - X-Requested-With
+              - "Content-Type"
+              - "Origin"
+              - "Authorization"
+              - "X-Api-Key"
+              - "Accept"
+              - "X-Requested-With"
             allowCredentials: true

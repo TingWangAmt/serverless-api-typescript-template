@@ -1,11 +1,16 @@
+import AWS from 'aws-sdk';
 import { Handler } from 'aws-lambda';
 import { Sequelize } from 'sequelize';
+import * as pg from 'pg';
 
-const sequelize = new Sequelize({
-    database:"test",
-    port:5432,
-    dialect:'postgres'
-});
+const sequelize = new Sequelize(
+  {
+    host: 'bopista-platform-lambda-rds-proxy.proxy-ceqbm7arub9o.ap-northeast-1.rds.amazonaws.com',
+    dialect:'postgres',
+    dialectModule: pg,
+    port:5432
+  }
+);
 
 const hello: Handler = async(event, context, callback) => {
     const origin = event.headers['origin'];
@@ -18,25 +23,29 @@ const hello: Handler = async(event, context, callback) => {
       };
     if (!!origin && resOriginHeader.includes(origin)) {
        responseHeaders['Access-Control-Allow-Origin'] = origin
-    }
-
+    };
+  
+    let response
     try {
-        await sequelize.authenticate();
-        console.log('Connection has been established successfully.');
-        const response = {
-            statusCode: 200,
-            headers: responseHeaders,
-            body: "postgre access successfully",
-          };
-        callback(null, response);
-      } catch (error) {
-        console.error('Unable to connect to the database:', error);
-        callback(null, {
-            statusCode: error.statusCode || 501,
-            headers: responseHeaders,
-            body: error.message,
-        });
+      const userinfo = await sequelize.query('SELECT * FROM userinfo');
+      response = {
+        statusCode: 200,
+        body: JSON.stringify({
+          serverTimestamp: new Date().toISOString(),
+          userinfo
+        })
       }
+    } catch (error) {
+      console.error(error)
+      response = {
+        statusCode: 500,
+        body: error.message
+      }
+    } finally {
+      console.log('Closing database connection')
+      await sequelize.close();
+    }
+    return response;
 };
 
 module.exports.list = hello;

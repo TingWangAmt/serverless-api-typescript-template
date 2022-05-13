@@ -1,5 +1,5 @@
 import { Handler } from 'aws-lambda';
-import * as AWS from 'aws-sdk'; 
+import * as AWS from 'aws-sdk';
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
