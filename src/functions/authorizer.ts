@@ -30,12 +30,6 @@ const authorizer = (token:string) => {
   const now = Number(new Date()) / 1000;
   if (now > claim.exp! || now < claim.auth_time) throw 'AuthError';
 
-  // 利用者(audience)の確認
-  if (claim.aud !== '1jsrhdgs4vb791mkfb2uvrcb3n')  throw 'AuthError';
-
-  // 発行者(issuer)の確認
-  if (claim.iss !== 'https://cognito-idp.ap-northeast-1.amazonaws.com/ap-northeast-1_uly1iPPi3') throw 'AuthError';
-
   // トークン種別の確認
   // IDトークンを使う場合の claim.token_use は 'id'
   // アクセストークンを使う場合の claim.token_use は 'access'

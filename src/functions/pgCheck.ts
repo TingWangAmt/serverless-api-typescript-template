@@ -4,15 +4,7 @@ import { Sequelize } from 'sequelize';
 import * as pg from 'pg';
 
 const sequelize = new Sequelize(
-  'test',
-  "postgres",
-  "ozmHuRwoJ1qo65Qvaass",
-  {
-    host: 'bopista-platform-lambda-rds-proxy.proxy-ceqbm7arub9o.ap-northeast-1.rds.amazonaws.com',
-    dialect:'postgres',
-    dialectModule: pg,
-    port:5432
-  }
+
 );
 
 const hello: Handler = async(event, context, callback) => {

@@ -3,6 +3,7 @@
 service: serverless-template 
 
 plugins:
+  - serverless-appsync-plugin
   - serverless-plugin-typescript
   - serverless-pseudo-parameters
   # - serverless-dynamodb-local
@@ -40,16 +41,59 @@ custom:
   stage: ${opt:stage, 'dev'}
   output:
     file: .serverless/output.json
-  # dynamodb:
-  #   stage:
-  #     - dev
-  #     - offline
-  #   start:
-  #     port: 8000
+  dynamodb:
+    stage:
+      - dev
+      - offline
+    start:
+      port: 8000
   #     inMemory: true
   #     migrate: true
   #   migration:
   #     dir: offline/migrations
+  appSync:
+    # AppSync API の名前
+    name: userinfo_backend
+    # 認証方式　今回は Cognito を使用する
+    authenticationType: AMAZON_COGNITO_USER_POOLS
+    userPoolConfig:
+      awsRegion: ap-northeast-1
+      defaultAction: ALLOW
+    schema: schema.graphql
+    dataSources:
+      - type: AMAZON_DYNAMODB
+        name: ${opt:stage, self:provider.stage}_user
+        description: user管理テーブル
+        config:
+          tableName: test
+          region: ap-northeast-1
+    mappingTemplatesLocation: mapping-templates
+    mappingTemplates:
+        # リゾルバーの方を指定します
+      - type: Query
+        # リゾルバーを紐づけるスキーマ中のフィールド名を指定します
+        field: name
+        # Pipeline Resolverを使い場合、以下を指定します
+        kind: PIPELINE
+        # リクエストマッピングテンプレートのファイルパスを指定します
+        # ファイルパスはmappingTemplatesLocationで指定したパスからの相対パスになります
+        request: 'start.vtl'
+        # # レスポンスマッピングテンプレートのファイルパスを指定します
+        response: 'end.vtl'
+        # リゾルバーで使う関数を実行順に指定します
+        functions:
+          - GetUser
+    functionConfigurations:
+        # ユーザー一覧取得
+        # 関数で扱うデータソース名を指定します
+      - dataSource: dynamo_user
+        # 関数名を指定します
+        name: 'GetUser'
+        # 関数のリクエストマッピングテンプレートのファイルパスを指定します
+        # ファイルパスはmappingTemplatesLocationで指定したパスからの相対パスになります
+        request: 'GetUser.req.vtl'
+        # 関数のレスポンスマッピングテンプレートのファイルパスを指定します
+        response: 'GetUser.res.vtl'
 
 package:
   exclude:
@@ -127,8 +171,8 @@ functions:
           #     - Accept
           #     - X-Requested-With
           #   allowCredentials: true
-          layers:
-            - "arn:aws:lambda:ap-northeast-1:388865528159:layer:pg-sequelize:4"
+  #         layers:
+  #           - "arn:aws:lambda:ap-northeast-1:388865528159:layer:pg-sequelize:4"
   healthcheck:
     handler: src/functions/healthcheck.healthcheck
     description: aws:states:opt-out
