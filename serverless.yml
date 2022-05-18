@@ -25,6 +25,9 @@ provider:
       - subnet-0c34570ad93f2ebb7
   environment:
     NODE_ENV: ${opt:stage, 'dev'}
+    DB_NAME: 'test'
+    DB_USER: 'postgres'
+    DB_PASSWORD: 'ozmHuRwoJ1qo65Qvaass'
     DB_PORT: 5432
     DB_HOST: 'bopista-platform-lambda-rds-proxy.proxy-ceqbm7arub9o.ap-northeast-1.rds.amazonaws.com'
   iamRoleStatements:
@@ -95,6 +98,7 @@ functions:
           cors: 
             origin:
               - "https://master.d2w7htrom5yxv0.amplifyapp.com"
+              - "https://dev.d10apifivscxf5.amplifyapp.com"
               - "http://localhost:3000"
             headers: 
               - "Content-Type"
@@ -115,6 +119,7 @@ functions:
           cors: 
             origin:
               - "https://master.d2w7htrom5yxv0.amplifyapp.com"
+              - "https://dev.d10apifivscxf5.amplifyapp.com"
               - "http://localhost:3000"
             headers: 
               - "Content-Type"

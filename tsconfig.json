@@ -1,5 +1,6 @@
 {
 	"compilerOptions": {
+		"resolveJsonModule": true,
 		"preserveConstEnums": true,
 		"strictNullChecks": true,
 		"sourceMap": true,
