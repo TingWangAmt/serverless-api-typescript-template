@@ -21,10 +21,12 @@
   },
   "homepage": "https://github.com/JoshuaToth/serverless-api-typescript-template#readme",
   "dependencies": {
+    "@types/node-jose": "^1.1.10",
     "aws-amplify-serverless-plugin": "^1.4.1",
     "aws-sdk": "^2.1132.0",
     "jsonwebtoken": "^8.5.1",
     "jwk-to-pem": "^2.0.5",
+    "node-jose": "^2.1.1",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.6.2",
