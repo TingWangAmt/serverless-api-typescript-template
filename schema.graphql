@@ -1,17 +1,99 @@
-type User {
-    id: ID!
-    name: String
+input CreateTest_appsuncInput {
+	name: String!
 }
 
-type UserResponse {
-  user: User
+input DeleteTest_appsuncInput {
+	name: String!
 }
 
-input GetUserInput {
-  id: ID!
+type Mutation {
+	createTest_appsunc(input: CreateTest_appsuncInput!): Test_appsunc
+	updateTest_appsunc(input: UpdateTest_appsuncInput!): Test_appsunc
+	deleteTest_appsunc(input: DeleteTest_appsuncInput!): Test_appsunc
 }
 
-# ユーザー1件取得
 type Query {
-    user(id: ID!): UserResponse
+	getTest_appsunc(name: String!): Test_appsunc
+	listTest_appsuncs(filter: TableTest_appsuncFilterInput, limit: Int, nextToken: String): Test_appsuncConnection
+}
+
+type Subscription {
+	onCreateTest_appsunc(name: String): Test_appsunc
+		@aws_subscribe(mutations: ["createTest_appsunc"])
+	onUpdateTest_appsunc(name: String): Test_appsunc
+		@aws_subscribe(mutations: ["updateTest_appsunc"])
+	onDeleteTest_appsunc(name: String): Test_appsunc
+		@aws_subscribe(mutations: ["deleteTest_appsunc"])
+}
+
+input TableBooleanFilterInput {
+	ne: Boolean
+	eq: Boolean
+}
+
+input TableFloatFilterInput {
+	ne: Float
+	eq: Float
+	le: Float
+	lt: Float
+	ge: Float
+	gt: Float
+	contains: Float
+	notContains: Float
+	between: [Float]
+}
+
+input TableIDFilterInput {
+	ne: ID
+	eq: ID
+	le: ID
+	lt: ID
+	ge: ID
+	gt: ID
+	contains: ID
+	notContains: ID
+	between: [ID]
+	beginsWith: ID
+}
+
+input TableIntFilterInput {
+	ne: Int
+	eq: Int
+	le: Int
+	lt: Int
+	ge: Int
+	gt: Int
+	contains: Int
+	notContains: Int
+	between: [Int]
+}
+
+input TableStringFilterInput {
+	ne: String
+	eq: String
+	le: String
+	lt: String
+	ge: String
+	gt: String
+	contains: String
+	notContains: String
+	between: [String]
+	beginsWith: String
+}
+
+input TableTest_appsuncFilterInput {
+	name: TableStringFilterInput
+}
+
+type Test_appsunc {
+	name: String!
+}
+
+type Test_appsuncConnection {
+	items: [Test_appsunc]
+	nextToken: String
+}
+
+input UpdateTest_appsuncInput {
+	name: String!
 }
