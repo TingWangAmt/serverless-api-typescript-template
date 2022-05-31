@@ -16,16 +16,9 @@ provider:
   versionFunctions: false
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'ap-northeast-1'}
-  role: arn:aws:iam::388865528159:role/serverless-template-dev-ap-northeast-1-lambdaRole
-  vpc:
-    securityGroupIds:
-      - sg-0c66673331d7e786a
-    subnetIds:
-      - subnet-063bc89ddcd0d099f
-      - subnet-08a3b69654a268e63
-      - subnet-0c34570ad93f2ebb7
   environment:
     NODE_ENV: ${opt:stage, 'dev'}
+    DB_NAME: 'test'
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -42,53 +35,41 @@ custom:
       - offline
     start:
       port: 8000
-  #     inMemory: true
-  #     migrate: true
-  #   migration:
-  #     dir: offline/migrations
+    #   inMemory: true
+    #   migrate: true
+    # migration:
+    #   dir: offline/migrations
   appSync:
-    # AppSync API の名前
     name: userinfo_backend
-    # 認証方式　今回は Cognito を使用する
     authenticationType: AMAZON_COGNITO_USER_POOLS
     userPoolConfig:
       awsRegion: ap-northeast-1
+      userPoolId
       defaultAction: ALLOW
     schema: schema.graphql
     dataSources:
       - type: AMAZON_DYNAMODB
-        name: ${opt:stage, self:provider.stage}_user
+        name: test
         description: user管理テーブル
         config:
           tableName: test
+          serviceRoleArn:
           region: ap-northeast-1
     mappingTemplatesLocation: mapping-templates
     mappingTemplates:
-        # リゾルバーの方を指定します
-      - type: Query
-        # リゾルバーを紐づけるスキーマ中のフィールド名を指定します
-        field: name
-        # Pipeline Resolverを使い場合、以下を指定します
-        kind: PIPELINE
-        # リクエストマッピングテンプレートのファイルパスを指定します
-        # ファイルパスはmappingTemplatesLocationで指定したパスからの相対パスになります
-        request: 'start.vtl'
-        # # レスポンスマッピングテンプレートのファイルパスを指定します
-        response: 'end.vtl'
-        # リゾルバーで使う関数を実行順に指定します
-        functions:
-          - GetUser
-    functionConfigurations:
-        # ユーザー一覧取得
-        # 関数で扱うデータソース名を指定します
-      - dataSource: dynamo_user
-        # 関数名を指定します
-        name: 'GetUser'
-        # 関数のリクエストマッピングテンプレートのファイルパスを指定します
-        # ファイルパスはmappingTemplatesLocationで指定したパスからの相対パスになります
-        request: 'GetUser.req.vtl'
-        # 関数のレスポンスマッピングテンプレートのファイルパスを指定します
-        response: 'GetUser.res.vtl'
+      - dataSource: test
+        type: Query
+        field: listTest_appsuncs
+        # kind: PIPELINE
+        # request: 'start.vtl'
+        # response: 'end.vtl'
+        # functions:
+        #   - GetUser
+    # functionConfigurations:
+    #   - dataSource: dynamo_user
+    #     name: 'GetUser'
+    #     request: 'GetUser.req.vtl'
+    #     response: 'GetUser.res.vtl'
 
 package:
   exclude:
@@ -147,7 +128,7 @@ resources:
 functions:
   pgCheck:
     handler: src/functions/pgCheck.list
-    role: arn:aws:iam::388865528159:role/serverless-template-dev-ap-northeast-1-lambdaRole
+    role:
     description: posrgre crud
     events:
       - http:

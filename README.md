@@ -1,22 +1,22 @@
 # ローカル環境構築
 ## Environment　Setup
-Install [git](https://git-scm.com/downloads)
 
-Install [node 14.x](https://nodejs.org/ja/download/releases/)
+1. Install [git](https://git-scm.com/downloads)
 
-Install [Aws cli](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+2. Install [node 14.x](https://nodejs.org/ja/download/releases/)
 
-Git Bashでコマンドを実行します。
+3. Install [Aws cli](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+
+Git Bashで以下のコマンドを実行します。
 
 ## Aws cli setting
-以下のコマンドを実行してAWS_ACCESS_KEY_IDとAWS_SECRET_ACCESS_KEYを設定します。
-AWS_DEFAULT_REGIONは`ap-northeast-1`（東京）にします。
-
 ```
 aws configure
 ```
+コマンドを実行して自分のAWS_ACCESS_KEY_IDとAWS_SECRET_ACCESS_KEYを設定します。
+AWS_DEFAULT_REGIONは`ap-northeast-1`（東京）にします。
 
-このコマンドを実行すると以下のように二つのファイルに設定が行われます。
+このコマンドを実行すると以下のように二つのファイルに設定が自動的に行われます。
 
 ~/.aws/credentials
 ```
@@ -33,8 +33,8 @@ region=ap-northeast-1
 
 ## Project Setup (Backend)
 ```
-# install serverless globally
-npm install
+# install Serverless Framework globally
+npm install -g serverless
 
 # project setup
 git clone XXXX
