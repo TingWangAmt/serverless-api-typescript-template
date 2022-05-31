@@ -1,12 +1,35 @@
-# Serverless API: Typescript and Jest Template
-A Serverless API template using Typescript and Jest.
+# ローカル環境構築
+## Environment　Setup
+Install [git](https://git-scm.com/downloads)
+Install [node 14.x](https://nodejs.org/ja/download/releases/)
+Install [Aws cli](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
-This setup uses AWS as the provider. 
+Git Bashでコマンドを実行します。
 
-To use your own provider, edit the `serverless.yml` as needed.
-The endpoint for the tests to run against will also need to be set to be more specific to your provider.
+## Aws cli setting
+以下のコマンドを実行してAWS_ACCESS_KEY_IDとAWS_SECRET_ACCESS_KEYを設定します。
+AWS_DEFAULT_REGIONは`ap-northeast-1`（東京）にします。
 
-## Getting up and running
+```
+aws configure
+```
+
+このコマンドを実行すると以下のように二つのファイルに設定が行われます。
+
+~/.aws/credentials
+```
+[default]
+aws_access_key_id=[Your key id]
+aws_secret_access_key=[Your access key]
+```
+
+~/.aws/config
+```
+[default]
+region=ap-northeast-1
+```
+
+## Project Setup (Backend)
 First install `serverless` and get that up and running. documentation [here](https://serverless.com/framework/docs/providers/aws/guide/quick-start/).
 
 You can use the standard `sls` commands or utilise the npm scripts in the project.
@@ -22,34 +45,3 @@ npm install
 ```
 npm run deploy
 ```
-
-## Deployment - Prod
-```
-npm run deploy:prod
-```
-
-## To remove:
-```
-npm run remove
-```
-
-# API interactions
-The API url can be found either the console output, or programatically accessed via the `.serverless/output.json` object.
-
-## GET: Healthcheck
-Test the service is up
-
-```
-/healthcheck
-```
-
-# Testing
-This template uses Jest (Typescript) to run its tests.
-
-To test, first deploy the application to your desired AWS stack.
-Then run
-```
-npm run test
-```
-
-This will use the generated API url to automatically test the application.
